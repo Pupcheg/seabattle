@@ -22,3 +22,15 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+java {
+    sourceCompatibility JavaVersion.toVersion(java_version)
+    targetCompatibility JavaVersion.toVersion(java_version)
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release.set java_version as int
+    options.encoding 'UTF-8'
+    sourceCompatibility java_version
+    targetCompatibility java_version
+}
