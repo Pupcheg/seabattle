@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -16,6 +15,10 @@ public final class SocketHostNetworkController extends SocketNetworkController {
 
     public SocketHostNetworkController(int port) throws IOException {
         this.serverSocket = new ServerSocket(port);
+    }
+
+    public int getPort() {
+        return serverSocket.getLocalPort();
     }
 
     public void awaitForConnection() throws IOException {
@@ -32,5 +35,10 @@ public final class SocketHostNetworkController extends SocketNetworkController {
     @Override
     protected OutputStream getOutputStream() throws IOException {
         return connection.getOutputStream();
+    }
+
+    @Override
+    public boolean isHost() {
+        return true;
     }
 }

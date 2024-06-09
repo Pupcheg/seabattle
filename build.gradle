@@ -7,16 +7,31 @@ version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    maven { url = "https://libraries.minecraft.net" }
 }
 
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
+
     implementation 'org.jetbrains:annotations:24.1.0'
     implementation 'com.google.code.gson:gson:2.11.0'
+    implementation 'com.mojang:brigadier:1.0.18'
 
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    manifest {
+        attributes(
+                'Main-Class': 'me.supcheg.seabattle.ui.CLI'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 test {

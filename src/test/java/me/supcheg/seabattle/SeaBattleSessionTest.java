@@ -1,54 +1,37 @@
 package me.supcheg.seabattle;
 
-import me.supcheg.seabattle.ui.BattleFieldRenderer;
+import me.supcheg.seabattle.ui.CLI;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.CompletableFuture;
 
 class SeaBattleSessionTest {
     @Test
-    void run() throws IOException {
-        SelfNetworkController networkController = new SelfNetworkController();
-        SeaBattleSession firstSession = new SeaBattleSession(
-                networkController,
-                new BattleFieldController()
+    void run() {
+        CompletableFuture<?> host = runCLI("""
+                host
+                890
+                me1
+                """
         );
-        SeaBattleSession secondSession = new SeaBattleSession(
-                networkController.createOpponent(),
-                new BattleFieldController()
-        );
-
-        firstSession.initialize();
-        secondSession.initialize();
-
-        firstSession.placeSelfShip(new BattleShip(
-                new ArrayList<>(List.of(new Position(0, 0)))
-        ));
-        firstSession.sendSelfField();
-        secondSession.sendSelfField();
-
-        secondSession.hitOn(new Position(0, 0));
-
-        assertTrue(
-                firstSession.getSelfField().getLeftShips().iterator().next()
-                        .getAlivePositions().isEmpty()
-        );
-        assertTrue(
-                secondSession.getOpponentField().getLeftShips().iterator().next()
-                        .getAlivePositions().isEmpty()
+        CompletableFuture<?> client = runCLI("""
+                client
+                localhost
+                889
+                localhost
+                890
+                me2
+                """
         );
 
-        firstSession.placeSelfShip(new BattleShip(new ArrayList<>(List.of(new Position(0, 1), new Position(1, 1)))));
-        secondSession.hitOn(new Position(0, 1));
+        host.join();
+        client.join();
+    }
 
-        PrintWriter out = new PrintWriter(System.out);
-        new BattleFieldRenderer(new BattleFieldController())
-                .renderSelfField(firstSession.getSelfField(), out);
-        out.flush();
+    private CompletableFuture<?> runCLI(@NotNull String commands) {
+        return CompletableFuture.runAsync(new CLI(new ByteArrayInputStream(commands.getBytes(StandardCharsets.UTF_8)), System.out));
     }
 }

@@ -30,4 +30,9 @@ public final class SocketClientNetworkController extends SocketNetworkController
     protected OutputStream getOutputStream() throws IOException {
         return socket.getOutputStream();
     }
+
+    @Override
+    public boolean isHost() {
+        return false;
+    }
 }

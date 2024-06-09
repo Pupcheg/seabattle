@@ -2,12 +2,14 @@ package me.supcheg.seabattle.net.socket;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import lombok.Data;
 import lombok.SneakyThrows;
 import me.supcheg.seabattle.net.NetworkController;
 import me.supcheg.seabattle.net.packet.Packet;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,24 +35,26 @@ public abstract class SocketNetworkController implements NetworkController {
     @SneakyThrows
     @Override
     public void sendPacket(@NotNull Packet packet) {
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(getOutputStream()));
         gson.toJson(
                 new TypedPacket(
                         packet.getClass().getName(),
                         packet
                 ),
                 TypedPacket.class,
-                new OutputStreamWriter(getOutputStream())
+                writer
         );
+        writer.flush();
     }
 
     @SneakyThrows
     @Override
     public void awaitResponse() {
-        JsonObject jsonObject = gson.fromJson(new InputStreamReader(getInputStream()), JsonObject.class);
+        JsonObject jsonObject = gson.fromJson(new JsonReader(new InputStreamReader(getInputStream())), JsonObject.class);
         String type = jsonObject.get("type").getAsString();
         Class<?> clazz = Class.forName(type);
         Object packet = gson.fromJson(jsonObject.get("packet"), clazz);
-        listeners.get(clazz).forEach(consumer -> consumer.accept(uncheckedCast(packet)));
+        listeners.getOrDefault(clazz, List.of()).forEach(consumer -> consumer.accept(uncheckedCast(packet)));
     }
 
     @Override

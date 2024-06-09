@@ -1,6 +1,5 @@
 package me.supcheg.seabattle.net;
 
-import me.supcheg.seabattle.BattleField;
 import me.supcheg.seabattle.net.packet.Packet;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,4 +12,6 @@ public interface NetworkController {
     void awaitResponse();
 
     <T extends Packet> void subscribeToPacket(@NotNull Class<T> packetType, @NotNull Consumer<T> listener);
+
+    boolean isHost();
 }

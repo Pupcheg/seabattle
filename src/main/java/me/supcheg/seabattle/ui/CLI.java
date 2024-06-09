@@ -1,35 +1,41 @@
 package me.supcheg.seabattle.ui;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldController;
-import me.supcheg.seabattle.SeaBattleSession;
-import me.supcheg.seabattle.net.socket.SocketClientNetworkController;
+import me.supcheg.seabattle.ui.mode.EditorMode;
+import me.supcheg.seabattle.ui.mode.play.OnlineMode;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
+import java.util.function.Function;
 
-@RequiredArgsConstructor
-public final class CLI {
+@Data
+public final class CLI implements Runnable {
+    private final Terminal terminal;
 
-    private final InputStream in;
-    private final PrintStream out;
-
-    public static void main(String[] args) {
+    public static void main(@NotNull String @NotNull [] args) {
         new CLI(System.in, System.out).run();
     }
 
-    public void run() {
-        Scanner scanner = new Scanner(in);
-
-        out.println("Enter username:");
-        String username = scanner.nextLine();
-
-        SocketClientNetworkController networkController = new SocketClientNetworkController();
-        SeaBattleSession session = new SeaBattleSession(
-                networkController,
-                new BattleFieldController()
-        );
-        session.initialize();
+    public CLI(@NotNull InputStream in, @NotNull PrintStream out) {
+        this.terminal = new Terminal(new Scanner(in), out);
     }
+
+    @Override
+    public void run() {
+        terminal.nextEnum(Mode.class, "Enter mode:").constructor.apply(terminal).run();
+    }
+
+    @RequiredArgsConstructor
+    private enum Mode {
+        ONLINE(OnlineMode::new),
+        BOT(__ -> () -> System.out.println("Not implemented")),
+        EDITOR(EditorMode::new),
+        HISTORY(__ -> () -> System.out.println("Not implemented"));
+
+        private final Function<Terminal, Runnable> constructor;
+    }
+
 }
