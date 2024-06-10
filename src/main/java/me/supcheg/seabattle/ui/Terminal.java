@@ -6,7 +6,9 @@ import lombok.experimental.Delegate;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 @Data
 public final class Terminal {
@@ -17,6 +19,11 @@ public final class Terminal {
 
     @NotNull
     public <E extends Enum<E>> E nextEnum(@NotNull Class<E> type, @NotNull String inputMessage) {
+        inputMessage += " Acceptable values: " +
+                        Arrays.stream(type.getEnumConstants())
+                                .map(Enum::name)
+                                .map(String::toLowerCase)
+                                .collect(Collectors.joining(", "));
         while (true) {
             out.println(inputMessage);
             String raw = scanner.next();

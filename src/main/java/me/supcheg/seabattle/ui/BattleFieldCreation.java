@@ -7,7 +7,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldController;
+import me.supcheg.seabattle.BattleFieldService;
 import me.supcheg.seabattle.BattleShip;
 import me.supcheg.seabattle.BattleShipInsertion;
 import me.supcheg.seabattle.Position;
@@ -43,7 +43,7 @@ public final class BattleFieldCreation {
     private final SeaBattleConfiguration configuration;
     private final FieldCreationMode mode;
     private final BattleFieldRenderer renderer;
-    private final BattleFieldController controller;
+    private final BattleFieldService controller;
     private final Terminal terminal;
     private final CommandDispatcher<Object> commandDispatcher;
     private final SelfField field;
@@ -54,7 +54,7 @@ public final class BattleFieldCreation {
     public BattleFieldCreation(@NotNull FieldCreationMode mode,
                                @NotNull BattleFieldRenderer renderer,
                                @NotNull SeaBattleConfiguration configuration,
-                               @NotNull BattleFieldController controller,
+                               @NotNull BattleFieldService controller,
                                @NotNull Terminal terminal) {
         this.configuration = configuration;
         this.gson = new Gson();
@@ -190,7 +190,7 @@ public final class BattleFieldCreation {
     }
 
     private int placeInsertion(@NotNull BattleShipInsertion insertion) {
-        BattleFieldController.PlaceResult placeResult = controller.canPlace(field, insertion);
+        BattleFieldService.PlaceResult placeResult = controller.canPlace(field, insertion);
         if (!placeResult.isSuccess()) {
             terminal.println(placeResult.getMessage());
             terminal.pause();

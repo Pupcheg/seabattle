@@ -2,13 +2,14 @@ package me.supcheg.seabattle.session;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldController;
+import me.supcheg.seabattle.BattleFieldService;
 import me.supcheg.seabattle.OpponentField;
 import me.supcheg.seabattle.Position;
 import me.supcheg.seabattle.SelfField;
 import me.supcheg.seabattle.ShipState;
 import me.supcheg.seabattle.config.SeaBattleConfiguration;
 import me.supcheg.seabattle.history.SessionHistory;
+import me.supcheg.seabattle.history.SessionHistoryService;
 import me.supcheg.seabattle.net.NetworkController;
 import me.supcheg.seabattle.net.packet.HelloPacket;
 import me.supcheg.seabattle.net.packet.PlayerMovePacket;
@@ -17,6 +18,8 @@ import me.supcheg.seabattle.net.packet.ReadyForBattlePacket;
 import me.supcheg.seabattle.net.packet.SelfFieldDefeatedPacket;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+
 @Data
 @RequiredArgsConstructor
 public final class SeaBattleSession {
@@ -24,7 +27,7 @@ public final class SeaBattleSession {
     private final SeaBattleConfiguration config;
 
     private final NetworkController networkController;
-    private final BattleFieldController battleFieldController;
+    private final BattleFieldService battleFieldService;
 
     private final SeaBattleSessionMeta meta;
 
@@ -32,17 +35,20 @@ public final class SeaBattleSession {
     private final OpponentField opponentField;
 
     private SessionHistory history;
+    private final SessionHistoryService historyService;
 
     public SeaBattleSession(@NotNull SeaBattleConfiguration config,
                             @NotNull NetworkController networkController,
-                            @NotNull BattleFieldController battleFieldController) {
+                            @NotNull BattleFieldService battleFieldService,
+                            @NotNull SessionHistoryService historyService) {
         this.config = config;
         this.networkController = networkController;
-        this.battleFieldController = battleFieldController;
+        this.battleFieldService = battleFieldService;
 
         this.meta = new SeaBattleSessionMeta();
         this.selfField = new SelfField(config.getFieldSize());
         this.opponentField = new OpponentField(config.getFieldSize());
+        this.historyService = historyService;
     }
 
     public void subscribeSetupPackets() {
@@ -52,8 +58,11 @@ public final class SeaBattleSession {
         );
         networkController.subscribeToPacket(ReadyForBattlePacket.class, packet -> {
             history = new SessionHistory(
+                    meta.getSelfUsername(),
+                    meta.getOpponentUsername(),
                     selfField,
-                    packet.getOpponentView()
+                    packet.getOpponentView(),
+                    LocalDateTime.now()
             );
         });
     }
@@ -64,13 +73,17 @@ public final class SeaBattleSession {
                 packet -> {
                     Position targetPosition = packet.getTargetPosition();
                     history.getOpponentMovesHistory().add(targetPosition);
-                    ShipState result = battleFieldController.acceptPlayerMove(selfField, targetPosition);
+                    ShipState result = battleFieldService.acceptPlayerMove(selfField, targetPosition);
                     networkController.sendPacket(new PlayerMoveResponsePacket(targetPosition, result));
                 }
         );
         networkController.subscribeToPacket(
                 PlayerMoveResponsePacket.class,
-                packet -> battleFieldController.acceptPlayerMove(opponentField, packet.getPosition(), packet.getState())
+                packet -> battleFieldService.acceptPlayerMove(opponentField, packet.getPosition(), packet.getState())
+        );
+        networkController.subscribeToPacket(
+                SelfFieldDefeatedPacket.class,
+                packet -> saveSessionHistory()
         );
     }
 
@@ -92,6 +105,13 @@ public final class SeaBattleSession {
     }
 
     public void sendDefeated() {
+        saveSessionHistory();
         networkController.sendPacket(new SelfFieldDefeatedPacket());
+    }
+
+    public void saveSessionHistory() {
+        LocalDateTime now = LocalDateTime.now();
+        history.setEndTime(now);
+        historyService.saveSessionHistory(history);
     }
 }

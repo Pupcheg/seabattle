@@ -6,7 +6,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ShipState {
-    ALIVE('X'), CLOSE('-'), HIT('x'), DEATH('D'), EMPTY('~');
+    ALIVE('X', true),
+    CLOSE('-', true),
+    HIT('x', false),
+    DEATH('D', false),
+    EMPTY('~', true);
 
     private final char rendered;
+    private final boolean endOfMove;
 }

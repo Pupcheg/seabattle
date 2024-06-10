@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.function.Function;
 
 @Data
-public final class BattleFieldController {
+public final class BattleFieldService {
     private final BattleShipInsertionConverter converter;
 
     @NotNull
@@ -22,7 +22,41 @@ public final class BattleFieldController {
     }
 
     public void acceptPlayerMove(@NotNull OpponentField field, @NotNull Position position, @NotNull ShipState state) {
+        if (state == ShipState.DEATH) {
+            walkDeadShip(field, position);
+            return;
+        }
+
         field.setStateAt(position, state);
+    }
+
+    private void walkDeadShip(@NotNull OpponentField field, @NotNull Position position) {
+        int x = position.getX();
+        int y = position.getY();
+
+        field.setStateAt(position, ShipState.DEATH);
+        for (int deltaX = -1; deltaX <= 1; deltaX++) {
+            int currentX = x + deltaX;
+            if (currentX < 0 || currentX >= field.getSize()) {
+                continue;
+            }
+
+            for (int deltaY = -1; deltaY <= 1; deltaY++) {
+
+                int currentY = y + deltaY;
+                if (currentY < 0 || currentY >= field.getSize()) {
+                    continue;
+                }
+
+                Position currentPosition = new Position(currentX, currentY);
+                ShipState currentState = field.getStateAt(currentPosition);
+                if (currentState == ShipState.HIT) {
+                    walkDeadShip(field, currentPosition);
+                } else if (currentState == ShipState.EMPTY) {
+                    field.setStateAt(currentPosition, ShipState.CLOSE);
+                }
+            }
+        }
     }
 
     @Nullable
@@ -55,10 +89,7 @@ public final class BattleFieldController {
         BattleShip ship = insertionToShip(insertion);
 
         for (Position position : ship.getAllPositions()) {
-            if (position.getX() < 0 || position.getY() < 0) {
-                return PlaceResult.DOESNT_FIT;
-            }
-            if (position.getX() >= size || position.getY() >= size) {
+            if (!isInField(position, size)) {
                 return PlaceResult.DOESNT_FIT;
             }
 
@@ -72,6 +103,15 @@ public final class BattleFieldController {
 
         }
         return PlaceResult.SUCCESS;
+    }
+
+    public boolean isInField(@NotNull Position position, int fieldSize) {
+        return position.getX() > 0 && position.getX() < fieldSize
+               && position.getY() > 0 && position.getY() < fieldSize;
+    }
+
+    public boolean canHit(@NotNull OpponentField field, @NotNull Position position) {
+        return field.getStateAt(position) == ShipState.EMPTY;
     }
 
     @Data
@@ -90,8 +130,7 @@ public final class BattleFieldController {
         return converter.insertionToShip(insertion);
     }
 
-    @NotNull
-    public BattleShipInsertion shipToInsertion(@NotNull BattleShip ship) {
-        return converter.shipToInsertion(ship);
+    public boolean isDefeated(@NotNull SelfField field) {
+        return field.getLeftShips().isEmpty();
     }
 }

@@ -1,7 +1,7 @@
 package me.supcheg.seabattle.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldController;
+import me.supcheg.seabattle.BattleFieldService;
 import me.supcheg.seabattle.BattleShip;
 import me.supcheg.seabattle.OpponentField;
 import me.supcheg.seabattle.Position;
@@ -13,7 +13,7 @@ import java.io.PrintStream;
 
 @RequiredArgsConstructor
 public final class BattleFieldRenderer {
-    private final BattleFieldController battleFieldController;
+    private final BattleFieldService battleFieldService;
 
     public void renderField(@NotNull OpponentField field, @NotNull PrintStream out) {
         out.print("    ");
@@ -58,9 +58,9 @@ public final class BattleFieldRenderer {
 
     @NotNull
     private ShipState getShipStateAt(@NotNull SelfField field, @NotNull Position position) {
-        BattleShip ship = battleFieldController.findShipByAnyPosition(field, position);
+        BattleShip ship = battleFieldService.findShipByAnyPosition(field, position);
         if (ship == null) {
-            if (battleFieldController.findShipByNearPosition(field, position) != null) {
+            if (battleFieldService.findShipByNearPosition(field, position) != null) {
                 return ShipState.CLOSE;
             }
 

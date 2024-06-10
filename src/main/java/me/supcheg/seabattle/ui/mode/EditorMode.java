@@ -3,7 +3,7 @@ package me.supcheg.seabattle.ui.mode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Data;
-import me.supcheg.seabattle.BattleFieldController;
+import me.supcheg.seabattle.BattleFieldService;
 import me.supcheg.seabattle.BattleShipInsertion;
 import me.supcheg.seabattle.BattleShipInsertionConverter;
 import me.supcheg.seabattle.SelfField;
@@ -40,7 +40,7 @@ public final class EditorMode implements Runnable {
         SeaBattleConfiguration configuration = new SeaBattleConfiguration(sizeOfField, entries);
 
         BattleShipInsertionConverter converter = new BattleShipInsertionConverter();
-        BattleFieldController controller = new BattleFieldController(converter);
+        BattleFieldService controller = new BattleFieldService(converter);
         BattleFieldCreation battleFieldCreation = new BattleFieldCreation(
                 BattleFieldCreation.FieldCreationMode.ANY,
                 new BattleFieldRenderer(controller),

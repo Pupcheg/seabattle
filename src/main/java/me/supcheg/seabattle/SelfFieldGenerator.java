@@ -11,12 +11,12 @@ import java.util.random.RandomGenerator;
 
 public final class SelfFieldGenerator {
     private final SeaBattleConfiguration config;
-    private final BattleFieldController controller;
+    private final BattleFieldService controller;
     private final RandomGenerator random;
     private final List<MutableBattleShipEntry> entries;
     private final SelfField selfField;
 
-    public SelfFieldGenerator(@NotNull SeaBattleConfiguration config, @NotNull BattleFieldController controller) {
+    public SelfFieldGenerator(@NotNull SeaBattleConfiguration config, @NotNull BattleFieldService controller) {
         this.config = config;
         this.controller = controller;
         this.random = ThreadLocalRandom.current();

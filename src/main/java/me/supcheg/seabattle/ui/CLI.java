@@ -3,6 +3,8 @@ package me.supcheg.seabattle.ui;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import me.supcheg.seabattle.ui.mode.EditorMode;
+import me.supcheg.seabattle.ui.mode.play.BotMode;
+import me.supcheg.seabattle.ui.mode.play.HistoryMode;
 import me.supcheg.seabattle.ui.mode.play.OnlineMode;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,15 +27,15 @@ public final class CLI implements Runnable {
 
     @Override
     public void run() {
-        terminal.nextEnum(Mode.class, "Enter mode:").constructor.apply(terminal).run();
+        terminal.nextEnum(Mode.class, "Which mode do you want to run?").constructor.apply(terminal).run();
     }
 
     @RequiredArgsConstructor
     private enum Mode {
         ONLINE(OnlineMode::new),
-        BOT(__ -> () -> System.out.println("Not implemented")),
+        BOT(BotMode::new),
         EDITOR(EditorMode::new),
-        HISTORY(__ -> () -> System.out.println("Not implemented"));
+        HISTORY(HistoryMode::new);
 
         private final Function<Terminal, Runnable> constructor;
     }
