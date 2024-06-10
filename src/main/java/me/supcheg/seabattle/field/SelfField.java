@@ -1,7 +1,8 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.field;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import me.supcheg.seabattle.ship.BattleShip;
 
 import java.util.HashSet;
 import java.util.Set;

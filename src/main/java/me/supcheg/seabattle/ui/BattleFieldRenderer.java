@@ -1,12 +1,12 @@
 package me.supcheg.seabattle.ui;
 
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldService;
-import me.supcheg.seabattle.BattleShip;
-import me.supcheg.seabattle.OpponentField;
-import me.supcheg.seabattle.Position;
-import me.supcheg.seabattle.SelfField;
-import me.supcheg.seabattle.ShipState;
+import me.supcheg.seabattle.field.BattleFieldService;
+import me.supcheg.seabattle.ship.BattleShip;
+import me.supcheg.seabattle.field.OpponentField;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.field.SelfField;
+import me.supcheg.seabattle.ship.ShipState;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.PrintStream;

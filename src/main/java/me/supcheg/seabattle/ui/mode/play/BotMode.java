@@ -1,17 +1,18 @@
 package me.supcheg.seabattle.ui.mode.play;
 
-import me.supcheg.seabattle.BattleShipInsertion;
-import me.supcheg.seabattle.OpponentField;
-import me.supcheg.seabattle.Position;
-import me.supcheg.seabattle.SelfField;
-import me.supcheg.seabattle.SelfFieldGenerator;
-import me.supcheg.seabattle.ShipState;
+import me.supcheg.seabattle.bot.BotMoveCalculator;
+import me.supcheg.seabattle.field.OpponentField;
+import me.supcheg.seabattle.field.SelfField;
+import me.supcheg.seabattle.field.SelfFieldGenerator;
 import me.supcheg.seabattle.net.NetworkController;
 import me.supcheg.seabattle.net.packet.HelloPacket;
 import me.supcheg.seabattle.net.packet.Packet;
 import me.supcheg.seabattle.net.packet.PlayerMovePacket;
 import me.supcheg.seabattle.net.packet.PlayerMoveResponsePacket;
 import me.supcheg.seabattle.net.packet.ReadyForBattlePacket;
+import me.supcheg.seabattle.ship.BattleShipInsertion;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.ship.ShipState;
 import me.supcheg.seabattle.ui.Terminal;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,11 +25,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import static me.supcheg.seabattle.Unchecked.uncheckedCast;
+import static me.supcheg.seabattle.util.Unchecked.uncheckedCast;
 
 public final class BotMode extends PlayMode {
     private SelfField botField;
     private OpponentField playerField;
+    private BotMoveCalculator calculator;
 
     public BotMode(@NotNull Terminal terminal) {
         super(terminal);
@@ -75,7 +77,7 @@ public final class BotMode extends PlayMode {
         }
 
         private void makeMove() {
-            sendToPlayer(new PlayerMovePacket(nextMove()));
+            sendToPlayer(new PlayerMovePacket(calculator.calculateMove()));
         }
 
         private void sendToPlayer(@NotNull Packet packet) {
@@ -94,20 +96,6 @@ public final class BotMode extends PlayMode {
         }
     }
 
-
-    @NotNull
-    private Position nextMove() {
-        for (int x = 0; x < playerField.getSize(); x++) {
-            for (int y = 0; y < playerField.getSize(); y++) {
-                Position candidate = new Position(x, y);
-                if (playerField.getStateAt(candidate) == ShipState.EMPTY) {
-                    return candidate;
-                }
-            }
-        }
-        return new Position(0, 0);
-    }
-
     private void initializeFields() {
         List<BattleShipInsertion> insertions = new SelfFieldGenerator(configuration, fieldController).generateInsertions();
         botField = new SelfField(configuration.getFieldSize());
@@ -115,5 +103,6 @@ public final class BotMode extends PlayMode {
                 .map(fieldController::insertionToShip)
                 .forEach(ship -> botField.getLeftShips().add(ship));
         playerField = new OpponentField(configuration.getFieldSize());
+        calculator = new BotMoveCalculator(playerField, fieldController);
     }
 }

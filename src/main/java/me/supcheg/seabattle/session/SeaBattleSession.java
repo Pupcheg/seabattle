@@ -2,11 +2,11 @@ package me.supcheg.seabattle.session;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import me.supcheg.seabattle.BattleFieldService;
-import me.supcheg.seabattle.OpponentField;
-import me.supcheg.seabattle.Position;
-import me.supcheg.seabattle.SelfField;
-import me.supcheg.seabattle.ShipState;
+import me.supcheg.seabattle.field.BattleFieldService;
+import me.supcheg.seabattle.field.OpponentField;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.field.SelfField;
+import me.supcheg.seabattle.ship.ShipState;
 import me.supcheg.seabattle.config.SeaBattleConfiguration;
 import me.supcheg.seabattle.history.SessionHistory;
 import me.supcheg.seabattle.history.SessionHistoryService;

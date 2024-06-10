@@ -4,7 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.supcheg.seabattle.Rotation;
+import me.supcheg.seabattle.ship.Rotation;
 import org.jetbrains.annotations.NotNull;
 
 public final class BattleShipRotationArgumentType implements ArgumentType<Rotation> {

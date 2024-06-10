@@ -1,8 +1,8 @@
 package me.supcheg.seabattle.history;
 
 import lombok.Data;
-import me.supcheg.seabattle.Position;
-import me.supcheg.seabattle.SelfField;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.field.SelfField;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

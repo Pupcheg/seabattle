@@ -1,4 +1,4 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.ship;
 
 import org.jetbrains.annotations.NotNull;
 

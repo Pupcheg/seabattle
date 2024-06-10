@@ -1,6 +1,11 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.field;
 
 import lombok.Data;
+import me.supcheg.seabattle.ship.BattleShip;
+import me.supcheg.seabattle.ship.BattleShipInsertion;
+import me.supcheg.seabattle.ship.BattleShipInsertionConverter;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.ship.ShipState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,6 +117,19 @@ public final class BattleFieldService {
 
     public boolean canHit(@NotNull OpponentField field, @NotNull Position position) {
         return field.getStateAt(position) == ShipState.EMPTY;
+    }
+
+    @Nullable
+    public Position findAnyPositionWithState(@NotNull OpponentField field, @NotNull ShipState state) {
+        for (int x = 0; x < field.getSize(); x++) {
+            for (int y = 0; y < field.getSize(); y++) {
+                Position position = new Position(x, y);
+                if (field.getStateAt(position) == state) {
+                    return position;
+                }
+            }
+        }
+        return null;
     }
 
     @Data

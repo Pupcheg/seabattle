@@ -1,5 +1,8 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.field;
 
+import me.supcheg.seabattle.ship.BattleShipInsertion;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.ship.Rotation;
 import me.supcheg.seabattle.config.MutableBattleShipEntry;
 import me.supcheg.seabattle.config.SeaBattleConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +31,7 @@ public final class SelfFieldGenerator {
     public List<BattleShipInsertion> generateInsertions() {
         List<BattleShipInsertion> insertions = new ArrayList<>();
 
-        int mainTries = 50;
+        int mainTries = 500;
         mainInsertion:
         while (true) {
             if (--mainTries == 0) {

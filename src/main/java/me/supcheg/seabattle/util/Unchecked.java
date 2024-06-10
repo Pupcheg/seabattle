@@ -1,4 +1,4 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.util;
 
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;

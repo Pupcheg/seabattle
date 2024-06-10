@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static me.supcheg.seabattle.Unchecked.uncheckedCast;
+import static me.supcheg.seabattle.util.Unchecked.uncheckedCast;
 
 public abstract class SocketNetworkController implements NetworkController {
     protected final Map<Class<? extends Packet>, List<Consumer<? extends Packet>>> listeners;

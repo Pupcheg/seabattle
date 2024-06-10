@@ -1,10 +1,10 @@
 package me.supcheg.seabattle.ui.mode.play;
 
 import lombok.SneakyThrows;
-import me.supcheg.seabattle.BattleFieldService;
-import me.supcheg.seabattle.BattleShipInsertionConverter;
-import me.supcheg.seabattle.Position;
-import me.supcheg.seabattle.SelfField;
+import me.supcheg.seabattle.field.BattleFieldService;
+import me.supcheg.seabattle.ship.BattleShipInsertionConverter;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.field.SelfField;
 import me.supcheg.seabattle.config.BattleShipEntry;
 import me.supcheg.seabattle.config.SeaBattleConfiguration;
 import me.supcheg.seabattle.history.SessionHistoryService;

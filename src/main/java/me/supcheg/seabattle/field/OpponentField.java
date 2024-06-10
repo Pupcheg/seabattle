@@ -1,6 +1,8 @@
-package me.supcheg.seabattle;
+package me.supcheg.seabattle.field;
 
 import lombok.EqualsAndHashCode;
+import me.supcheg.seabattle.ship.Position;
+import me.supcheg.seabattle.ship.ShipState;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
