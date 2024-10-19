@@ -3,6 +3,7 @@ package me.supcheg.seabattle.ui.mode;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import me.supcheg.seabattle.field.BattleFieldService;
 import me.supcheg.seabattle.ship.BattleShipInsertion;
 import me.supcheg.seabattle.ship.BattleShipInsertionConverter;
@@ -17,13 +18,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Data
+@RequiredArgsConstructor
 public final class EditorMode implements Runnable {
     private final Terminal terminal;
     private final Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-
-    public EditorMode(@NotNull Terminal terminal) {
-        this.terminal = terminal;
-    }
 
     @Override
     public void run() {
@@ -54,6 +52,6 @@ public final class EditorMode implements Runnable {
                 .stream()
                 .map(converter::shipToInsertion)
                 .toList();
-        gson.toJson(insertions, System.out);
+        gson.toJson(insertions, terminal.getOut());
     }
 }

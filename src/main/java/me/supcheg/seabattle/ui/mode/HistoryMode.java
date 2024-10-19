@@ -1,4 +1,4 @@
-package me.supcheg.seabattle.ui.mode.play;
+package me.supcheg.seabattle.ui.mode;
 
 import lombok.RequiredArgsConstructor;
 import me.supcheg.seabattle.ui.Terminal;

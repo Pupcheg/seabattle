@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import me.supcheg.seabattle.ui.mode.EditorMode;
 import me.supcheg.seabattle.ui.mode.play.BotMode;
-import me.supcheg.seabattle.ui.mode.play.HistoryMode;
+import me.supcheg.seabattle.ui.mode.HistoryMode;
 import me.supcheg.seabattle.ui.mode.play.OnlineMode;
 import org.jetbrains.annotations.NotNull;
 
